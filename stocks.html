@@ -1,0 +1,76 @@
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Stocks Page</title>
+  </head>
+  <body>
+    <h1>My Stocks Page</h1>
+
+    <select id="stock-selector">
+      <option value="MSFT" selected=true>Microsoft</option>
+      <option value="GOOG">Google</option>
+      <option value="AAPL">Apple</option>
+    </select>
+
+    <p>Latest Date: <span id="latest-date">some placeholder content</span></p>
+    <p>Latest Closing Price: <span id="latest-closing-price">some placeholder content</span></p>
+    <div id="my-chart-container" style="width:100%; height:400px;"></div>
+
+    <script>
+
+      var cachedResponse;
+      // FYI: this is JavaScript
+      console.log("HELLO FROM THE DATAVIZ PAGE!")
+
+      var stockSelector = document.getElementById("stock-selector")
+      var latestDateParagraph = document.getElementById("latest-date")
+      var latestPriceParagraph = document.getElementById("latest-closing-price")
+
+      // define a function with logic to request stock market data and write the results to the page
+      function updateStockData() {
+
+        // get the selected stock from the <select> element:
+        var symbol = stockSelector.value
+        console.log("STOCK SYMBOL:", symbol)
+
+        // compile the request URL
+        // see: https://www.alphavantage.co/documentation/#daily
+        var requestUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&apikey=abc123&symbol=" + symbol
+        console.log("REQUEST URL:", requestUrl)
+
+        // issue the HTTP request
+        // see: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+        fetch(requestUrl)
+          .then((response) => {
+            return response.json();
+          })
+          .then((responseData) => {
+            console.log("RESPONSE DATA:", responseData)
+            cachedResponse = responseData
+
+            // determine latest date and closing price
+            // depends on the specific nested structure of our responseData
+            // for data structure, see: https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&apikey=demo
+            var latestDate = "2020-01-24"
+            console.log("LATEST DATE:", latestDate)
+            var latestClose = responseData["Time Series (Daily)"][latestDate]["4. close"]
+            console.log("LATEST CLOSING PRICE:", latestClose)
+
+            // update page contents:
+            latestDateParagraph.innerHTML = latestDate
+            latestPriceParagraph.innerHTML = "$" + latestClose
+          })
+      }
+
+      // update when the page loads for the first time:
+      updateStockData()
+
+      // also update when a stock is selected:
+      stockSelector.addEventListener("change", updateStockData, false)
+
+    </script>
+  </body>
+</html>
