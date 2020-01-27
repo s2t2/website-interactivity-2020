@@ -62,9 +62,9 @@
             // depends on the specific nested structure of our responseData
             // for data structure, see: https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&apikey=demo
             var tsd = responseData["Time Series (Daily)"]
-            var daily_entries = Object.entries(tsd) // see: https://github.com/prof-rossetti/intro-to-web-dev/blob/master/notes/javascript/notes.md#object-methods
-            console.log("LATEST ENTRY", daily_entries[0])
-            var latestDate = daily_entries[0][0] // "2020-01-24"
+            var dailyEntries = Object.entries(tsd) // see: https://github.com/prof-rossetti/intro-to-web-dev/blob/master/notes/javascript/notes.md#object-methods
+            console.log("LATEST ENTRY", dailyEntries[0])
+            var latestDate = dailyEntries[0][0] // "2020-01-24"
             console.log("LATEST DATE:", latestDate)
             var latestClose = tsd[latestDate]["4. close"]
             console.log("LATEST CLOSING PRICE:", latestClose)
@@ -72,6 +72,24 @@
             // update page contents:
             latestDateParagraph.innerHTML = latestDate
             latestPriceParagraph.innerHTML = "$" + latestClose
+
+            // update chart:
+            var dates = Object.keys(tsd) //> ["2020-01-27", "2020-01-24", "2020-01-23", etc.]
+            var allPrices = Object.values(tsd) // [{}, {}, {}]
+            var closingPrices = allPrices.map(function(obj){
+              return obj["4. close"]
+            }) // mapping, see: https://github.com/prof-rossetti/intro-to-web-dev/blob/master/notes/javascript/notes.md#iteration
+            var series = {
+              x: dates,
+              y: closingPrices,
+              mode: "lines+markers"
+            }
+            var data = [series]
+            var layout = {
+              title: "Daily Closing Prices for Stock: " + symbol
+            }
+            Plotly.newPlot("my-chart-container", data, layout, {responsive: true})
+
           })
       }
 
@@ -87,31 +105,42 @@
 
 
 
-      var series1 = {
-        x: [1, 2, 3, 4],
-        y: [10, 15, 13, 17],
-        mode: "markers"
-      }
 
-      var series2 = {
-        x: [2, 3, 4, 5],
-        y: [16, 5, 11, 9],
-        mode: "lines"
-      }
 
-      var series3 = {
-        x: [1, 2, 3, 4],
-        y: [12, 9, 15, 12],
-        mode: "lines+markers"
-      }
+      //var series1 = {
+      //  x: [1, 2, 3, 4],
+      //  y: [10, 15, 13, 17],
+      //  mode: "markers"
+      //}
+      //var series2 = {
+      //  x: [2, 3, 4, 5],
+      //  y: [16, 5, 11, 9],
+      //  mode: "lines"
+      //}
+      //var series3 = {
+      //  x: [1, 2, 3, 4],
+      //  y: [12, 9, 15, 12],
+      //  mode: "lines+markers"
+      //}
+      //var data = [ series1, series2, series3 ]
+      //var series = {
+      //  x: dates,
+      //  y: closingPrices,
+      //  mode: "lines+markers"
+      //}
+      //var data = [series]
+      //var layout = {
+      //  title: "Line and Scatter Plot"
+      //}
+      //Plotly.newPlot("my-chart-container", data, layout, {responsive: true})
 
-      var data = [ series1, series2, series3 ]
 
-      var layout = {
-        title: "Line and Scatter Plot"
-      }
 
-      Plotly.newPlot("my-chart-container", data, layout, {responsive: true})
+
+
+
+
+
 
 
 
@@ -139,64 +168,63 @@
       //  ]
       //}
 
-      chartOptions = {
-        title: {
-          text: 'Solar Employment Growth by Sector, 2010-2016'
-        },
-        subtitle: {
-          text: 'Source: thesolarfoundation.com'
-        },
-        yAxis: {
-          title: {
-            text: 'Number of Employees'
-          }
-        },
-        legend: {
-          layout: 'vertical',
-          align: 'right',
-          verticalAlign: 'middle'
-        },
-        plotOptions: {
-          series: {
-            label: {
-              connectorAllowed: false
-            },
-            pointStart: 2010
-          }
-        },
-        series: [{
-          name: 'Installation',
-          data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
-        }, {
-          name: 'Manufacturing',
-          data: [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434]
-        }, {
-          name: 'Sales & Distribution',
-          data: [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387]
-        }, {
-          name: 'Project Development',
-          data: [null, null, 7988, 12169, 15112, 22452, 34400, 34227]
-        }, {
-          name: 'Other',
-          data: [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111]
-        }],
-        responsive: {
-          rules: [{
-            condition: {
-              maxWidth: 500
-            },
-            chartOptions: {
-              legend: {
-                layout: 'horizontal',
-                align: 'center',
-                verticalAlign: 'bottom'
-              }
-            }
-          }]
-        }
-      }
-
-      Highcharts.chart('another-chart-container', chartOptions)
+      //chartOptions = {
+      //  title: {
+      //    text: 'Solar Employment Growth by Sector, 2010-2016'
+      //  },
+      //  subtitle: {
+      //    text: 'Source: thesolarfoundation.com'
+      //  },
+      //  yAxis: {
+      //    title: {
+      //      text: 'Number of Employees'
+      //    }
+      //  },
+      //  legend: {
+      //    layout: 'vertical',
+      //    align: 'right',
+      //    verticalAlign: 'middle'
+      //  },
+      //  plotOptions: {
+      //    series: {
+      //      label: {
+      //        connectorAllowed: false
+      //      },
+      //      pointStart: 2010
+      //    }
+      //  },
+      //  series: [{
+      //    name: 'Installation',
+      //    data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
+      //  }, {
+      //    name: 'Manufacturing',
+      //    data: [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434]
+      //  }, {
+      //    name: 'Sales & Distribution',
+      //    data: [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387]
+      //  }, {
+      //    name: 'Project Development',
+      //    data: [null, null, 7988, 12169, 15112, 22452, 34400, 34227]
+      //  }, {
+      //    name: 'Other',
+      //    data: [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111]
+      //  }],
+      //  responsive: {
+      //    rules: [{
+      //      condition: {
+      //        maxWidth: 500
+      //      },
+      //      chartOptions: {
+      //        legend: {
+      //          layout: 'horizontal',
+      //          align: 'center',
+      //          verticalAlign: 'bottom'
+      //        }
+      //      }
+      //    }]
+      //  }
+      //}
+      //Highcharts.chart('another-chart-container', chartOptions)
 
 
     </script>
