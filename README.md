@@ -1,5 +1,7 @@
 # Website Interactivity Exercise
 
+solutions for the website interactivity exercise
+
 ## Usage
 
 Run local webserver:
