@@ -21,15 +21,17 @@
 
     <script>
 
-      var cachedResponse;
       // FYI: this is JavaScript
       console.log("HELLO FROM THE DATAVIZ PAGE!")
 
+      // select elements from the document:
       var stockSelector = document.getElementById("stock-selector")
       var latestDateParagraph = document.getElementById("latest-date")
       var latestPriceParagraph = document.getElementById("latest-closing-price")
 
-      // define a function with logic to request stock market data and write the results to the page
+      var cachedResponse // response data will only be accessible within the scope of the fetch() statement, so provide a variable in the global scope we can store response data to, for debugging in the console
+
+      // define a function with logic to request stock market data and write the results to the page:
       function updateStockData() {
 
         // get the selected stock from the <select> element:
@@ -41,7 +43,7 @@
         var requestUrl = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&apikey=abc123&symbol=" + symbol
         console.log("REQUEST URL:", requestUrl)
 
-        // issue the HTTP request
+        // issue the HTTP request to the specified URL
         // see: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
         fetch(requestUrl)
           .then((response) => {
@@ -49,14 +51,17 @@
           })
           .then((responseData) => {
             console.log("RESPONSE DATA:", responseData)
-            cachedResponse = responseData
+            cachedResponse = responseData // store the response data in a variable that can be accessed after the request has been made (so you can debug via the console)
 
             // determine latest date and closing price
             // depends on the specific nested structure of our responseData
             // for data structure, see: https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&apikey=demo
-            var latestDate = "2020-01-24"
+            var tsd = responseData["Time Series (Daily)"]
+            var daily_entries = Object.entries(tsd) // see: https://github.com/prof-rossetti/intro-to-web-dev/blob/master/notes/javascript/notes.md#object-methods
+            console.log("LATEST ENTRY", daily_entries[0])
+            var latestDate = daily_entries[0][0] // "2020-01-24"
             console.log("LATEST DATE:", latestDate)
-            var latestClose = responseData["Time Series (Daily)"][latestDate]["4. close"]
+            var latestClose = tsd[latestDate]["4. close"]
             console.log("LATEST CLOSING PRICE:", latestClose)
 
             // update page contents:
